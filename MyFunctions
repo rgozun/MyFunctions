@@ -1,4 +1,7 @@
-### Column Datatypes and Positions
-col_dtypes = pd.DataFrame(df.dtypes)
-col_dtypes.reset_index(inplace=True)
-col_dtypes.columns = ['Feature','DataType']
+# Features Metadata
+def col_dtypes(df_input):
+    ColDtypes = []
+    ColDtypes = pd.DataFrame(df.dtypes)
+    ColDtypes.reset_index(inplace=True)
+    ColDtypes.columns = ['Feature','DataType']
+    return(ColDtypes)
