@@ -53,3 +53,6 @@ def ClassifierBoot():
         cm = confusion_matrix(y_test, y_pred)
 
         print("Confusion Matrix of %s is %s"%(clf, cm))
+
+# Check Null Counts
+df.isnull().sum()
