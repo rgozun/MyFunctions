@@ -27,7 +27,7 @@ def my_corrmat(df_input):
                 square=True, linewidths=.5, cbar_kws={"shrink": .5})
     
     # Correlation Coefficients output
-    corrmat.to_csv(r'Correlation Matrix 2 - r_scores.txt', sep='|', header=True, index=True)
+    #corrmat.to_csv(r'Correlation Matrix 2 - r_scores.txt', sep='|', header=True, index=True)
 
 # Classifiers: Random Forest, SVM, Logit, Decision Tree
 def ClassifierBoot():
