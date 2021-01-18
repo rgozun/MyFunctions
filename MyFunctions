@@ -1,0 +1,4 @@
+### Column Datatypes and Positions
+col_dtypes = pd.DataFrame(df.dtypes)
+col_dtypes.reset_index(inplace=True)
+col_dtypes.columns = ['Feature','DataType']
