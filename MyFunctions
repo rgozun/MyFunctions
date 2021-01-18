@@ -5,3 +5,51 @@ def col_dtypes(df_input):
     ColDtypes.reset_index(inplace=True)
     ColDtypes.columns = ['Feature','DataType']
     return(ColDtypes)
+
+# Correlation Matrix
+def my_corrmat(df_input):
+    sns.set_theme(style="white")
+
+    # Compute the correlation matrix
+    corrmat = df_input.corr()
+
+    # Generate a mask for the upper triangle
+    mask = np.triu(np.ones_like(corrmat, dtype=bool))
+
+    # Set up the matplotlib figure
+    f, ax = plt.subplots(figsize=(11, 9))
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+    # Draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(corrmat, mask=mask, cmap=cmap, center=0,
+                square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    
+    # Correlation Coefficients output
+    corrmat.to_csv(r'Correlation Matrix 2 - r_scores.txt', sep='|', header=True, index=True)
+
+# Classifiers: Random Forest, SVM, Logit, Decision Tree
+def ClassifierBoot():
+    classifiers = []
+
+    model1 = RandomForestClassifier()
+    classifiers.append(model1)
+
+    model2 = svm.SVC()
+    classifiers.append(model2)
+    
+    model3 = LogisticRegression(max_iter=400)
+    classifiers.append(model3)
+    
+    model4 = tree.DecisionTreeClassifier()
+    classifiers.append(model4)
+
+    for clf in classifiers:
+        clf.fit(X_train, y_train)
+        y_pred= clf.predict(X_test)
+        acc = accuracy_score(y_test, y_pred)
+        print("Accuracy of %s is %s"%(clf, acc))
+        cm = confusion_matrix(y_test, y_pred)
+
+        print("Confusion Matrix of %s is %s"%(clf, cm))
