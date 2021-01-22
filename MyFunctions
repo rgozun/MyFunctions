@@ -29,7 +29,7 @@ def my_corrmat(df_input):
     # Correlation Coefficients output
     #corrmat.to_csv(r'Correlation Matrix 2 - r_scores.txt', sep='|', header=True, index=True)
 
-# Classifiers: Random Forest, SVM, Logit, Decision Tree
+# Quick Preview of Classifiers: Random Forest, SVM, Logit, Decision Tree
 def ClassifierBoot():
     classifiers = []
 
