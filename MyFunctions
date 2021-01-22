@@ -7,19 +7,21 @@ def col_dtypes(df_input,nUniqLim):
     ColDtypes.reset_index(inplace=True)
     ColDtypes.columns = ['Feature','DataType']
     
-    # Identify Number of Unique Values and label Factor If Less or Equal To nUniqLim
+    # Identify Number of Unique Values and label Feature a Factor If Less or Equal To nUniqLim
     ColDtypes['Factor'] = np.nan
     ColDtypes['nFactor'] = np.nan
     
     for row in range(0,len(ColDtypes)):
         if df_input[ColDtypes.iloc[row,0]].nunique() <= nUniqLim:
-            ColDtypes.iloc[row,2] = 1
+            ColDtypes.iloc[row,2] = '1'
         else:
-            ColDtypes.iloc[row,2] = 0
+            ColDtypes.iloc[row,2] = '0'
         
     for row in range(0,len(ColDtypes)):
-        if ColDtypes.iloc[row,2] == 1:
+        if ColDtypes.iloc[row,2] == '1':
             ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
+        else:
+            ColDtypes.iloc[row,3] = 'Continous/Discrete'
     
     return(ColDtypes)
 
