@@ -133,5 +133,9 @@ def ClassifierBoot():
 
         print("Confusion Matrix of %s is %s"%(clf, cm))
 
-# Check Null Counts
-df.isnull().sum()
+# Check Null Counts and Percentage
+df_full_nulls = pd.DataFrame(df_full.isnull().sum(),columns=['nNull']).rename_axis(index='Feature')
+df_full_nulls['PercentNull'] = np.nan
+for row in range(0,len(df_full_nulls)):
+    df_full_nulls.iloc[row,1] = df_full_nulls.iloc[row,0] / len(df_full)
+df_full_nulls
