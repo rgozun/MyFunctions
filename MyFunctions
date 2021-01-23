@@ -20,21 +20,11 @@ def DatasetLoad(filepath,filename,target,index,dfname):
 
     # Set Index
     df = df.set_index(index)
-
-    # Remove Columns With Insignificant Data
-    useless_cols = []
-    for row in range(0,len(df_full_metadata)):
-        if (df_full_metadata.iloc[row,3] in [0,1]) and (df_full_metadata.iloc[row,0] != target):
-            useless_cols.append(df_full_metadata.iloc[row,0])
-        else:
-             pass
-            
-    df = df.drop(useless_cols,axis=1)
     
     return(df)
 
 # Features Metadata
-def col_dtypes(df_input,nUniqLim):
+def Metadata(df_input,nUniqLim):
     ColDtypes = []
     
     # Identify Datatype
@@ -42,23 +32,37 @@ def col_dtypes(df_input,nUniqLim):
     ColDtypes.reset_index(inplace=True)
     ColDtypes.columns = ['Feature','DataType']
     
-    # Identify Number of Unique Values and label Feature a Factor If Less or Equal To nUniqLim
+    # label Feature a Factor If Less or Equal To nUniqLim
     ColDtypes['Factor'] = np.nan
-    ColDtypes['nFactor'] = np.nan
-    
     for row in range(0,len(ColDtypes)):
         if df_input[ColDtypes.iloc[row,0]].nunique() <= nUniqLim:
             ColDtypes.iloc[row,2] = '1'
         else:
             ColDtypes.iloc[row,2] = '0'
-        
+
+    # Identify Number of Unique Values
+    ColDtypes['nFactor'] = np.nan
     for row in range(0,len(ColDtypes)):
         if ColDtypes.iloc[row,2] == '1':
             ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
         else:
-            ColDtypes.iloc[row,3] = 'Continous/Discrete'
+            ColDtypes.iloc[row,3] = 'NotFactor'
     
     return(ColDtypes)
+
+# Remove Columns With Insignificant Data. Requires target to be at column position 0
+def UselessColumns(dfinput):
+    dfinput = dfinput
+    useless_cols = []
+    for row in range(0,len(df_full_metadata)):
+        if (df_full_metadata.iloc[row,3] in [0,1]) and (df_full_metadata.iloc[row,0] != df_full.columns[0]):
+            useless_cols.append(df_full_metadata.iloc[row,0])
+        else:
+            pass
+
+    dfinput = dfinput.drop(useless_cols,axis=1)
+
+    return(dfinput)
 
 # Correlation Matrix 1
 def my_corrmat(df_input):
