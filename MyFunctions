@@ -16,10 +16,20 @@ def DatasetLoad(filepath,filename,target,index,dfname):
     target = target
     targetarray = df[target]
     df = df.drop(columns=target)
-    df.insert(0,str(target),target)
+    df.insert(0,str(target),targetarray)
 
     # Set Index
     df = df.set_index(index)
+
+    # Remove Columns With Insignificant Data
+    useless_cols = []
+    for row in range(0,len(df_full_metadata)):
+        if (df_full_metadata.iloc[row,3] in [0,1]) and (df_full_metadata.iloc[row,0] != target):
+            useless_cols.append(df_full_metadata.iloc[row,0])
+        else:
+             pass
+            
+    df = df.drop(useless_cols,axis=1)
     
     return(df)
 
