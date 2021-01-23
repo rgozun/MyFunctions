@@ -12,7 +12,7 @@ def DatasetLoad(filepath,filename,target,index):
     df_full = df_full.reindex(sorted(df_full.columns),axis=1)
 
     # Move Target To Front of Dataframe
-    target = str(target)
+    target = target
     targetarray = df_full[target]
     df_full = df_full.drop(columns=target)
     df_full.insert(0,str(target),target)
