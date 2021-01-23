@@ -3,25 +3,25 @@ def DatasetLoad(filepath,filename,target,index,dfname):
     # Load data
     filepath = filepath
     filename = filename
-    dfname = dfname
-    dfname = pd.read_csv(filepath+filename,header=0)
+    dfname_str = dfname
+    df = pd.read_csv(filepath+filename,header=0)
 
     # Remove Duplicated Rows
-    dfname = dfname.drop_duplicates(keep='first')
+    df = df.drop_duplicates(keep='first')
 
     # Sort Columns in Alphabetical Order
-    dfname = dfname.reindex(sorted(dfname.columns),axis=1)
+    df = df.reindex(sorted(df.columns),axis=1)
 
     # Move Target To Front of Dataframe
     target = target
-    targetarray = dfname[target]
-    dfname = dfname.drop(columns=target)
-    dfname.insert(0,str(target),target)
+    targetarray = df[target]
+    df = df.drop(columns=target)
+    df.insert(0,str(target),target)
 
     # Set Index
-    dfname = dfname.set_index('LeadID')
+    df = df.set_index(index)
     
-    return(dfname)
+    return(df)
 
 # Features Metadata
 def col_dtypes(df_input,nUniqLim):
