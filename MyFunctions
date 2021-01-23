@@ -1,24 +1,27 @@
-# Load Dataset
-def DatasetLoad(filepath,filename,target,index):
+# Load Datafile Including Headers
+def DatasetLoad(filepath,filename,target,index,dfname):
     # Load data
     filepath = filepath
     filename = filename
-    df_full = pd.read_csv(filepath+filename,header=0)
+    dfname = dfname
+    dfname = pd.read_csv(filepath+filename,header=0)
 
     # Remove Duplicated Rows
-    df_full = df_full.drop_duplicates(keep='first')
+    dfname = dfname.drop_duplicates(keep='first')
 
     # Sort Columns in Alphabetical Order
-    df_full = df_full.reindex(sorted(df_full.columns),axis=1)
+    dfname = dfname.reindex(sorted(dfname.columns),axis=1)
 
     # Move Target To Front of Dataframe
     target = target
-    targetarray = df_full[target]
-    df_full = df_full.drop(columns=target)
-    df_full.insert(0,str(target),target)
+    targetarray = dfname[target]
+    dfname = dfname.drop(columns=target)
+    dfname.insert(0,str(target),target)
 
     # Set Index
-    df_full = df_full.set_index('LeadID')
+    dfname = dfname.set_index('LeadID')
+    
+    return(dfname)
 
 # Features Metadata
 def col_dtypes(df_input,nUniqLim):
