@@ -61,7 +61,7 @@ def Metadata(df_input,nUniqLim):
     return(ColDtypes)
 
 # Remove Columns With Insignificant Data. Requires target to be at column position 0
-def UselessColumns(dfinput):
+def JunkColumns(dfinput):
     dfinput = dfinput
     useless_cols = []
     for row in range(0,len(df_full_metadata)):
