@@ -48,6 +48,16 @@ def Metadata(df_input,nUniqLim):
         else:
             ColDtypes.iloc[row,3] = 'NotFactor'
     
+    # Count Nulls
+    ColDtypes['nNulls'] = np.nan
+    for row in range(0,len(ColDtypes)):   
+        ColDtypes.iloc[row,4] = df_input[ColDtypes.iloc[row,0]].isnull().sum()
+
+    # Null Percent
+    ColDtypes['PercentNulls'] = np.nan
+    for row in range(0,len(ColDtypes)):
+        ColDtypes.iloc[row,5] = round((ColDtypes.iloc[row,4] / len(df_input)) * 100, 1)
+
     return(ColDtypes)
 
 # Remove Columns With Insignificant Data. Requires target to be at column position 0
@@ -63,19 +73,6 @@ def UselessColumns(dfinput):
     dfinput = dfinput.drop(useless_cols,axis=1)
 
     return(dfinput)
-
-# Check Null Counts and Proportions
-def NullCheck(dfinput):
-    # Count Nulls
-    df_full_nulls = pd.DataFrame(df_full.isnull().sum(),columns=['nNull']).rename_axis(index='Feature')
-    
-    # Null Percent
-    df_full_nulls['PercentNull'] = np.nan
-    for row in range(0,len(df_full_nulls)):
-        df_full_nulls.iloc[row,1] = df_full_nulls.iloc[row,0] / len(df_full)
-    df_full_nulls
-    
-    return(df_full_nulls)
 
 # Correlation Matrix 1
 def my_corrmat(df_input):
