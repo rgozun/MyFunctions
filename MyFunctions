@@ -1,9 +1,8 @@
 # Load Datafile Including Headers
-def DatasetLoad(filepath,filename,target,index,dfname):
+def DatasetLoad(filepath,filename,target,index):
     # Load data
     filepath = filepath
     filename = filename
-    dfname_str = dfname
     df = pd.read_csv(filepath+filename,header=0)
 
     # Remove Duplicated Rows
@@ -22,7 +21,7 @@ def DatasetLoad(filepath,filename,target,index,dfname):
     df = df.set_index(index)
     
     return(df)
-
+    
 def Metadata(df_input,AutoClass,nUniqLim):
     ColDtypes = []
     
