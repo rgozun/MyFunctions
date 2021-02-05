@@ -23,7 +23,6 @@ def DatasetLoad(filepath,filename,target,index,dfname):
     
     return(df)
 
-# Features Metadata
 def Metadata(df_input,AutoClass,nUniqLim):
     ColDtypes = []
     
@@ -34,6 +33,8 @@ def Metadata(df_input,AutoClass,nUniqLim):
     
     # label Feature a Factor If Less or Equal To nUniqLim
     if AutoClass == False:
+        ColDtypes['Factor'] = np.nan
+        
         # Identify Number of Unique Values
         ColDtypes['nFactor'] = np.nan
         for row in range(0,len(ColDtypes)):
