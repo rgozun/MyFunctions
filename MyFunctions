@@ -24,7 +24,7 @@ def DatasetLoad(filepath,filename,target,index,dfname):
     return(df)
 
 # Features Metadata
-def Metadata(df_input,nUniqLim):
+def Metadata(df_input,AutoClass,nUniqLim):
     ColDtypes = []
     
     # Identify Datatype
@@ -33,21 +33,27 @@ def Metadata(df_input,nUniqLim):
     ColDtypes.columns = ['Feature','DataType']
     
     # label Feature a Factor If Less or Equal To nUniqLim
-    ColDtypes['Factor'] = np.nan
-    for row in range(0,len(ColDtypes)):
-        if df_input[ColDtypes.iloc[row,0]].nunique() <= nUniqLim:
-            ColDtypes.iloc[row,2] = '1'
-        else:
-            ColDtypes.iloc[row,2] = '0'
-
-    # Identify Number of Unique Values
-    ColDtypes['nFactor'] = np.nan
-    for row in range(0,len(ColDtypes)):
-        if ColDtypes.iloc[row,2] == '1':
+    if AutoClass == False:
+        # Identify Number of Unique Values
+        ColDtypes['nFactor'] = np.nan
+        for row in range(0,len(ColDtypes)):
             ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
-        else:
-            ColDtypes.iloc[row,3] = 'NotFactor'
-    
+    else:
+        # Flag If Factor
+        ColDtypes['Factor'] = np.nan
+        for row in range(0,len(ColDtypes)):
+            if df_input[ColDtypes.iloc[row,0]].nunique() <= nUniqLim:
+                ColDtypes.iloc[row,2] = 1
+            else:
+                ColDtypes.iloc[row,2] = 0
+        # Identify Number of Unique Values
+        ColDtypes['nFactor'] = np.nan
+        for row in range(0,len(ColDtypes)):
+            if ColDtypes.iloc[row,2] == 1:
+                ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
+            else:
+                ColDtypes.iloc[row,3] = 'NotFactor'
+
     # Count Nulls
     ColDtypes['nNulls'] = np.nan
     for row in range(0,len(ColDtypes)):   
@@ -59,20 +65,6 @@ def Metadata(df_input,nUniqLim):
         ColDtypes.iloc[row,5] = round((ColDtypes.iloc[row,4] / len(df_input)) * 100, 1)
 
     return(ColDtypes)
-
-# Remove Columns With Insignificant Data. Requires target to be at column position 0
-def JunkColumns(dfinput):
-    dfinput = dfinput
-    useless_cols = []
-    for row in range(0,len(df_full_metadata)):
-        if (df_full_metadata.iloc[row,3] in [0,1]) and (df_full_metadata.iloc[row,0] != df_full.columns[0]):
-            useless_cols.append(df_full_metadata.iloc[row,0])
-        else:
-            pass
-
-    dfinput = dfinput.drop(useless_cols,axis=1)
-
-    return(dfinput)
 
 # Correlation Matrix 1
 def my_corrmat(df_input):
