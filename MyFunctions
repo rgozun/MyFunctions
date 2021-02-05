@@ -66,6 +66,21 @@ def Metadata(df_input,AutoClass,nUniqLim):
 
     return(ColDtypes)
 
+# Remove Columns With Insignificant Data. Requires target to be at column position 0 and for Metadata to Refreshed Prior to Executing
+def JunkColumns(dfinput):
+    df_full_metadata = Metadata(dfinput,False,0)
+    dfinput = dfinput
+    useless_cols = []
+    for row in range(0,len(df_full_metadata)):
+        if (df_full_metadata.iloc[row,3] in [0,1]) and (df_full_metadata.iloc[row,0] != df_full.columns[0]):
+            useless_cols.append(df_full_metadata.iloc[row,0])
+        else:
+            pass
+
+    dfinput = dfinput.drop(useless_cols,axis=1)
+
+    return(dfinput)
+
 # Correlation Matrix 1
 def my_corrmat(df_input):
     sns.set_theme(style="white")
@@ -109,6 +124,12 @@ def my_corrmat(df_input):
     g.map_lower(sns.regplot, lowess=True, ci=False, line_kws={'color': 'black'})
     g.map_diag(sns.distplot, kde_kws={'color': 'black'})
     g.map_upper(corrdot)
+
+# Train Test Splitter
+def train_test(df_input,testsize):
+    X, y = df_input.iloc[:,1:len(pd.DataFrame(df_input.columns))], df_input.iloc[:,0]
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=testsize, random_state=1, shuffle=True)
+    return X_train, X_test, y_train, y_test
 
 # Quick Preview of Classifiers: Random Forest, SVM, Logit, Decision Tree
 def ClassifierBoot():
