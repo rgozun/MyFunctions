@@ -1,9 +1,52 @@
 # Features Metadata
-def col_dtypes(df_input):
+def Metadata(df_input,AutoClass,nUniqLim):
     ColDtypes = []
-    ColDtypes = pd.DataFrame(df.dtypes)
+    
+    # Identify Datatype
+    ColDtypes = pd.DataFrame(df_input.dtypes)
     ColDtypes.reset_index(inplace=True)
     ColDtypes.columns = ['Feature','DataType']
+    
+    # label Feature a Factor If Less or Equal To nUniqLim
+    if AutoClass == False:
+        ColDtypes['Factor'] = np.nan
+        
+        # Identify Number of Unique Values
+        ColDtypes['nUnique'] = np.nan
+        for row in range(0,len(ColDtypes)):
+            ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
+    else:
+        # Flag If Factor
+        ColDtypes['Factor'] = np.nan
+        for row in range(0,len(ColDtypes)):
+            if df_input[ColDtypes.iloc[row,0]].nunique() <= nUniqLim:
+                ColDtypes.iloc[row,2] = 1
+            else:
+                ColDtypes.iloc[row,2] = 0
+        # Identify Number of Unique Values
+        ColDtypes['nUnique'] = np.nan
+        for row in range(0,len(ColDtypes)):
+            if ColDtypes.iloc[row,2] == 1:
+                ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
+            else:
+                ColDtypes.iloc[row,3] = 'NotFactor'
+
+    # Count Nulls
+    ColDtypes['nNulls'] = np.nan
+    for row in range(0,len(ColDtypes)):   
+        ColDtypes.iloc[row,4] = df_input[ColDtypes.iloc[row,0]].isnull().sum()
+
+    # Null Percent
+    ColDtypes['PercentNulls'] = np.nan
+    for row in range(0,len(ColDtypes)):
+        ColDtypes.iloc[row,5] = round((ColDtypes.iloc[row,4] / len(df_input)) * 100, 1)
+        
+    # Remove column Factor if AutoClass==False
+    if AutoClass == False:
+        ColDtypes = ColDtypes.drop(columns='Factor')
+    else:
+        pass
+
     return(ColDtypes)
 
 # Correlation Matrix 1
