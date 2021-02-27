@@ -1,5 +1,5 @@
 # Features Metadata
-def Metadata(df_input,AutoClass,nUniqLim):
+def metadata(df_input,AutoClass,nUniqLim):
     ColDtypes = []
     
     # Identify Datatype
