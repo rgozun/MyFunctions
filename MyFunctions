@@ -1,5 +1,5 @@
 # Load Datafile Including Headers
-def DatasetLoad(filepath,filename,target,index):
+def rg_SupervisedDataLoad(filepath,filename,target,index):
     # Load data
     filepath = filepath
     filename = filename
@@ -22,7 +22,7 @@ def DatasetLoad(filepath,filename,target,index):
     
     return(df)
     
-def Metadata(df_input,AutoClass,nUniqLim):
+def rg_Metadata(df_input,AutoClass,nUniqLim):
     ColDtypes = []
     
     # Identify Datatype
