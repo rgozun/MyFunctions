@@ -1,85 +1,93 @@
+import pandas as pd
+import numpy as np
+
+
 # Load Datafile Including Headers
-def rg_SupervisedDataLoad(filepath,filename,target,index):
+def rg_SupervisedML_DataLoad(filepath, filename, target, index):
     # Load data
     filepath = filepath
     filename = filename
-    df = pd.read_csv(filepath+filename,header=0)
+    df = pd.read_csv(''.join([filepath, filename]), header=0)
 
     # Remove Duplicated Rows
     df = df.drop_duplicates(keep='first')
 
     # Sort Columns in Alphabetical Order
-    df = df.reindex(sorted(df.columns),axis=1)
+    df = df.reindex(sorted(df.columns), axis=1)
 
     # Move Target To Front of Dataframe
     target = target
     targetarray = df[target]
     df = df.drop(columns=target)
-    df.insert(0,str(target),targetarray)
+    df.insert(0, str(target), targetarray)
 
     # Set Index
     df = df.set_index(index)
-    
-    return(df)
-    
-def rg_Metadata(df_input,AutoClass,nUniqLim):
+
+    return (df)
+
+
+def rg_Metadata(df_input, AutoClass, nUniqLim):
     ColDtypes = []
-    
+
     # Identify Datatype
     ColDtypes = pd.DataFrame(df_input.dtypes)
     ColDtypes.reset_index(inplace=True)
-    ColDtypes.columns = ['Feature','DataType']
-    
+    ColDtypes.columns = ['Feature', 'DataType']
+
     # label Feature a Factor If Less or Equal To nUniqLim
     if AutoClass == False:
         ColDtypes['Factor'] = np.nan
-        
+
         # Identify Number of Unique Values
         ColDtypes['nFactor'] = np.nan
-        for row in range(0,len(ColDtypes)):
-            ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
+        for row in range(0, len(ColDtypes)):
+            ColDtypes.iloc[row, 3] = df_input[ColDtypes.iloc[row, 0]].nunique()
     else:
         # Flag If Factor
         ColDtypes['Factor'] = np.nan
-        for row in range(0,len(ColDtypes)):
-            if df_input[ColDtypes.iloc[row,0]].nunique() <= nUniqLim:
-                ColDtypes.iloc[row,2] = 1
+        for row in range(0, len(ColDtypes)):
+            if df_input[ColDtypes.iloc[row, 0]].nunique() <= nUniqLim:
+                ColDtypes.iloc[row, 2] = 1
             else:
-                ColDtypes.iloc[row,2] = 0
+                ColDtypes.iloc[row, 2] = 0
+        
         # Identify Number of Unique Values
         ColDtypes['nFactor'] = np.nan
-        for row in range(0,len(ColDtypes)):
-            if ColDtypes.iloc[row,2] == 1:
-                ColDtypes.iloc[row,3] = df_input[ColDtypes.iloc[row,0]].nunique()
+        for row in range(0, len(ColDtypes)):
+            if ColDtypes.iloc[row, 2] == 1:
+                ColDtypes.iloc[row, 3] = df_input[ColDtypes.iloc[row, 0]].nunique()
             else:
-                ColDtypes.iloc[row,3] = 'NotFactor'
+                ColDtypes.iloc[row, 3] = 'NotFactor'
 
     # Count Nulls
     ColDtypes['nNulls'] = np.nan
-    for row in range(0,len(ColDtypes)):   
-        ColDtypes.iloc[row,4] = df_input[ColDtypes.iloc[row,0]].isnull().sum()
+    for row in range(0, len(ColDtypes)):
+        ColDtypes.iloc[row, 4] = df_input[ColDtypes.iloc[row, 0]].isnull().sum()
 
     # Null Percent
     ColDtypes['PercentNulls'] = np.nan
-    for row in range(0,len(ColDtypes)):
-        ColDtypes.iloc[row,5] = round((ColDtypes.iloc[row,4] / len(df_input)) * 100, 1)
+    for row in range(0, len(ColDtypes)):
+        ColDtypes.iloc[row, 5] = round((ColDtypes.iloc[row, 4] / len(df_input)) * 100, 1)
 
-    return(ColDtypes)
+    return (ColDtypes)
 
-# Remove Columns With Insignificant Data. Requires target to be at column position 0 and for Metadata to Refreshed Prior to Executing
-def JunkColumns(dfinput):
-    df_full_metadata = Metadata(dfinput,False,0)
+
+# Remove Columns With Insignificant Data. Requires target to be at column position 0 (output from rg_SupervisedML_DataLoad already does this) and for Metadata to Refreshed Prior to Executing
+def rg_JunkColumns(dfinput):
+    df_metadata = rg_Metadata(dfinput, False, 0)
     dfinput = dfinput
     useless_cols = []
-    for row in range(0,len(df_full_metadata)):
-        if (df_full_metadata.iloc[row,3] in [0,1]) and (df_full_metadata.iloc[row,0] != df_full.columns[0]):
-            useless_cols.append(df_full_metadata.iloc[row,0])
+    for row in range(0, len(df_metadata)):
+        if (df_metadata.iloc[row, 3] in [0, 1]) and (df_metadata.iloc[row, 0] != dfinput.columns[0]):
+            useless_cols.append(df_metadata.iloc[row, 0])
         else:
             pass
 
-    dfinput = dfinput.drop(useless_cols,axis=1)
+    dfinput = dfinput.drop(useless_cols, axis=1)
 
-    return(dfinput)
+    return (dfinput)
+
 
 # Correlation Matrix 1
 def my_corrmat(df_input):
@@ -100,11 +108,11 @@ def my_corrmat(df_input):
     # Draw the heatmap with the mask and correct aspect ratio
     sns.heatmap(corrmat, mask=mask, cmap=cmap, center=0,
                 square=True, linewidths=.5, cbar_kws={"shrink": .5})
-    
+
     # Correlation Coefficients output
-    #corrmat.to_csv(r'Correlation Matrix 2 - r_scores.txt', sep='|', header=True, index=True)
-   
-# Correlation Matrix 2
+    # corrmat.to_csv(r'Correlation Matrix 2 - r_scores.txt', sep='|', header=True, index=True)
+
+    # Correlation Matrix 2
     warnings.filterwarnings('ignore')
 
     def corrdot(*args, **kwargs, df_input):
@@ -116,7 +124,7 @@ def my_corrmat(df_input):
         ax.scatter([.5], [.5], marker_size, [corr_r], alpha=0.6, cmap="coolwarm",
                    vmin=-1, vmax=1, transform=ax.transAxes)
         font_size = abs(corr_r) * 40 + 5
-        ax.annotate(corr_text, [.5, .5,],  xycoords="axes fraction",
+        ax.annotate(corr_text, [.5, .5, ], xycoords="axes fraction",
                     ha='center', va='center', fontsize=font_size)
 
     sns.set(style='white', font_scale=1.6)
@@ -125,11 +133,13 @@ def my_corrmat(df_input):
     g.map_diag(sns.distplot, kde_kws={'color': 'black'})
     g.map_upper(corrdot)
 
+
 # Train Test Splitter
-def train_test(df_input,testsize):
-    X, y = df_input.iloc[:,1:len(pd.DataFrame(df_input.columns))], df_input.iloc[:,0]
-    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=testsize, random_state=1, shuffle=True)
+def train_test(df_input, testsize):
+    X, y = df_input.iloc[:, 1:len(pd.DataFrame(df_input.columns))], df_input.iloc[:, 0]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=testsize, random_state=1, shuffle=True)
     return X_train, X_test, y_train, y_test
+
 
 # Quick Preview of Classifiers: Random Forest, SVM, Logit, Decision Tree
 def ClassifierBoot():
@@ -140,18 +150,18 @@ def ClassifierBoot():
 
     model2 = svm.SVC()
     classifiers.append(model2)
-    
+
     model3 = LogisticRegression(max_iter=400)
     classifiers.append(model3)
-    
+
     model4 = tree.DecisionTreeClassifier()
     classifiers.append(model4)
 
     for clf in classifiers:
         clf.fit(X_train, y_train)
-        y_pred= clf.predict(X_test)
+        y_pred = clf.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
-        print("Accuracy of %s is %s"%(clf, acc))
+        print("Accuracy of %s is %s" % (clf, acc))
         cm = confusion_matrix(y_test, y_pred)
 
-        print("Confusion Matrix of %s is %s"%(clf, cm))
+        print("Confusion Matrix of %s is %s" % (clf, cm))
