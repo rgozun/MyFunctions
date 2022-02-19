@@ -71,6 +71,19 @@ def rg_Metadata(df_input, AutoClass, nUniqLim):
     return (ColDtypes)
 
 
+# Review Unique Values in Factor Columns
+def rg_FactorUniqueValues(df_input, df_meta):
+  TempDF_FactorValues = []
+  TempDF_FactorValues = pd.DataFrame(df_meta[df_meta.Factor == 1].Feature)
+  TempDF_FactorValues.reset_index(inplace=True, drop=True)
+
+  TempDF_FactorValues['UniqueValues'] = np.nan
+  for row in range(0, len(TempDF_FactorValues.Feature)):
+    TempDF_FactorValues.iloc[row, 1] = str(df_input[TempDF_FactorValues.iloc[row, 0]].unique())
+                          
+  return(TempDF_FactorValues)
+
+
 # Remove Columns With Insignificant Data. Requires target to be at column position 0 (output from rg_SupervisedML_DataLoad already does this) and for Metadata to Refreshed Prior to Executing
 def rg_JunkColumns(dfinput):
     df_metadata = rg_Metadata(dfinput, False, 0)
