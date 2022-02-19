@@ -27,6 +27,7 @@ def rg_SupervisedML_DataLoad(filepath, filename, target, index):
     return (df)
 
 
+# Features Metadata
 def rg_Metadata(df_input, AutoClass, nUniqLim):
     ColDtypes = []
 
@@ -37,10 +38,6 @@ def rg_Metadata(df_input, AutoClass, nUniqLim):
 
     # label Feature a Factor If Less or Equal To nUniqLim
     if AutoClass == False:
-        for row in range(0, len(ColDtypes)):
-            
-        
-        
         ColDtypes['Factor'] = np.nan
 
         # Identify Number of Unique Values
@@ -64,15 +61,12 @@ def rg_Metadata(df_input, AutoClass, nUniqLim):
             else:
                 ColDtypes.iloc[row, 3] = 'NotFactor'
 
-    # Count Nulls
+    # Populate nNulls and PercentNulls
     ColDtypes['nNulls'] = np.nan
-    for row in range(0, len(ColDtypes)):
-        ColDtypes.iloc[row, 4] = df_input[ColDtypes.iloc[row, 0]].isnull().sum()
-
-    # Null Percent
     ColDtypes['PercentNulls'] = np.nan
     for row in range(0, len(ColDtypes)):
-        ColDtypes.iloc[row, 5] = round((ColDtypes.iloc[row, 4] / len(df_input)) * 100, 1)
+      ColDtypes.iloc[row, 4] = df_input[ColDtypes.iloc[row, 0]].isnull().sum()
+      ColDtypes.iloc[row, 5] = round((ColDtypes.iloc[row, 4] / len(df_input)) * 100, 1)
 
     return (ColDtypes)
 
