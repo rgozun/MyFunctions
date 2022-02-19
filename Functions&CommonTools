@@ -72,7 +72,7 @@ def rg_Metadata(df_input, AutoClass, nUniqLim):
 
 
 # Review Unique Values in Factor Columns
-def rg_FactorUniqueValues(df_input, df_meta):
+def rg_FactorValues(df_input, df_meta):
   TempDF_FactorValues = []
   TempDF_FactorValues = pd.DataFrame(df_meta[df_meta.Factor == 1].Feature)
   TempDF_FactorValues.reset_index(inplace=True, drop=True)
